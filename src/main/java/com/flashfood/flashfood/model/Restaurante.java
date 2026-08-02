@@ -1,39 +1,45 @@
 package com.flashfood.flashfood.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_usuario")
-public class Usuario {
+@Table(name = "tb_restaurante")
+public class Restaurante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
-    private String email;
-    private String senha;
+    private String categoria;
+    private Double taxaFrete;
 
-    // Associação 1:1 com Endereco (Um Usuario possui um Endereco)
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    public Usuario() {
+    //@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    //private List<Produto> produtos = new ArrayList<>();
+
+    public Restaurante() {
     }
 
-    public Usuario(Long id, String nome, String email, String senha, Endereco endereco) {
+    public Restaurante(Long id, String nome, String categoria, Double taxaFrete, Endereco endereco) {
         this.id = id;
         this.nome = nome;
-        this.email = email;
-        this.senha = senha;
+        this.categoria = categoria;
+        this.taxaFrete = taxaFrete;
         this.endereco = endereco;
     }
 
@@ -53,20 +59,20 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCategoria() {
+        return categoria;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
-    public String getSenha() {
-        return senha;
+    public Double getTaxaFrete() {
+        return taxaFrete;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setTaxaFrete(Double taxaFrete) {
+        this.taxaFrete = taxaFrete;
     }
 
     public Endereco getEndereco() {
@@ -76,4 +82,12 @@ public class Usuario {
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
+
+    //public List<Produto> getProdutos() {
+   //     return produtos;
+  //  }
+
+    //public void setProdutos(List<Produto> produtos) {
+   //     this.produtos = produtos;
+   // }
 }
