@@ -22,7 +22,7 @@ class ProdutoRepositoryTest {
 
     @Test
     void deveSalvarProdutoEGerarId() {
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Burguer King's", "Lanches", 5.0, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Burguer King's", "Lanches", 5.0, null, null));
         Produto produto = new Produto(null, "X-Burguer", "Hamburguer artesanal", 25.90, true, restaurante);
 
         Produto salvo = produtoRepository.save(produto);
@@ -32,7 +32,7 @@ class ProdutoRepositoryTest {
 
     @Test
     void deveListarApenasProdutosAtivosDoRestaurante() {
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Pizzaria Bella", "Pizza", 6.0, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Pizzaria Bella", "Pizza", 6.0, null, null));
         produtoRepository.save(new Produto(null, "Pizza Calabresa", "Pizza grande", 45.0, true, restaurante));
         produtoRepository.save(new Produto(null, "Pizza Descontinuada", "Sabor antigo", 30.0, false, restaurante));
 
@@ -44,8 +44,8 @@ class ProdutoRepositoryTest {
 
     @Test
     void naoDeveListarProdutosDeOutroRestaurante() {
-        Restaurante restauranteA = restauranteRepository.save(new Restaurante(null, "Restaurante A", "Regional", 5.0, null));
-        Restaurante restauranteB = restauranteRepository.save(new Restaurante(null, "Restaurante B", "Regional", 5.0, null));
+        Restaurante restauranteA = restauranteRepository.save(new Restaurante(null, "Restaurante A", "Regional", 5.0, null, null));
+        Restaurante restauranteB = restauranteRepository.save(new Restaurante(null, "Restaurante B", "Regional", 5.0, null, null));
         produtoRepository.save(new Produto(null, "Prato A", "Descricao", 20.0, true, restauranteA));
 
         List<Produto> produtosDeB = produtoRepository.findByRestauranteIdAndAtivoTrue(restauranteB.getId());

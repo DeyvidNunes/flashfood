@@ -1,8 +1,5 @@
 package com.flashfood.flashfood.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,27 +7,27 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_pedido")
 public class Pedido {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario cliente;
+    private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pagamento_id")
+    private Pagamento pagamento;
 
     private Double valorTotal;
     private String status;
@@ -38,21 +35,13 @@ public class Pedido {
     public Pedido() {
     }
 
-    public Pedido(Long id, Usuario cliente, Restaurante restaurante, String status) {
+    public Pedido(Long id, Cliente cliente, Restaurante restaurante, Pagamento pagamento, String status) {
         this.id = id;
         this.cliente = cliente;
         this.restaurante = restaurante;
+        this.pagamento = pagamento;
         this.status = status;
         this.valorTotal = 0.0;
-    }
-
-    public void calcularValorTotal() {
-        double totalItens = 0.0;
-        for (ItemPedido item : itens) {
-            totalItens += item.getSubtotal();
-        }
-        double frete = (restaurante != null && restaurante.getTaxaFrete() != null) ? restaurante.getTaxaFrete() : 0.0;
-        this.valorTotal = totalItens + frete;
     }
 
     public Long getId() {
@@ -63,10 +52,11 @@ public class Pedido {
         this.id = id;
     }
 
-    public Usuario getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
-    public void setCliente(Usuario cliente) {
+
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
@@ -78,12 +68,12 @@ public class Pedido {
         this.restaurante = restaurante;
     }
 
-    public List<ItemPedido> getItens() {
-        return itens;
+    public Pagamento getPagamento() {
+        return pagamento;
     }
 
-    public void setItens(List<ItemPedido> itens) {
-        this.itens = itens;
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
     }
 
     public Double getValorTotal() {

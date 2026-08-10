@@ -20,7 +20,7 @@ class RestauranteRepositoryTest {
     @Test
     void deveSalvarRestauranteComCascadeDeEndereco() {
         Endereco endereco = new Endereco(null, "Rua do Comercio", "50", null, "Centro", "Bezerros", "55650-000");
-        Restaurante restaurante = new Restaurante(null, "Sabor Caseiro", "Regional", 5.0, endereco);
+        Restaurante restaurante = new Restaurante(null, "Sabor Caseiro", "Regional", 5.0, endereco, null);
 
         Restaurante salvo = restauranteRepository.save(restaurante);
 
@@ -30,9 +30,9 @@ class RestauranteRepositoryTest {
 
     @Test
     void deveBuscarPorCategoriaIgnorandoCase() {
-        restauranteRepository.save(new Restaurante(null, "Sushi House", "Japonesa", 8.0, null));
-        restauranteRepository.save(new Restaurante(null, "Temaki Express", "japonesa", 6.0, null));
-        restauranteRepository.save(new Restaurante(null, "Pizza Boa", "Pizza", 4.0, null));
+        restauranteRepository.save(new Restaurante(null, "Sushi House", "Japonesa", 8.0, null, null));
+        restauranteRepository.save(new Restaurante(null, "Temaki Express", "japonesa", 6.0, null, null));
+        restauranteRepository.save(new Restaurante(null, "Pizza Boa", "Pizza", 4.0, null, null));
 
         List<Restaurante> encontrados = restauranteRepository.findByCategoriaContainingIgnoreCase("japon");
 
@@ -41,7 +41,7 @@ class RestauranteRepositoryTest {
 
     @Test
     void deveBuscarPorNomeIgnorandoCase() {
-        restauranteRepository.save(new Restaurante(null, "Cantina da Nona", "Italiana", 7.0, null));
+        restauranteRepository.save(new Restaurante(null, "Cantina da Nona", "Italiana", 7.0, null, null));
 
         List<Restaurante> encontrados = restauranteRepository.findByNomeContainingIgnoreCase("nona");
 

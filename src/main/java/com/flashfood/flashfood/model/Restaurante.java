@@ -1,26 +1,21 @@
 package com.flashfood.flashfood.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_restaurante")
 public class Restaurante {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private String categoria;
     private Double taxaFrete;
@@ -29,18 +24,20 @@ public class Restaurante {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    //@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    //private List<Produto> produtos = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "dono_id")
+    private DonoRestaurante dono;
 
     public Restaurante() {
     }
 
-    public Restaurante(Long id, String nome, String categoria, Double taxaFrete, Endereco endereco) {
+    public Restaurante(Long id, String nome, String categoria, Double taxaFrete, Endereco endereco, DonoRestaurante dono) {
         this.id = id;
         this.nome = nome;
         this.categoria = categoria;
         this.taxaFrete = taxaFrete;
         this.endereco = endereco;
+        this.dono = dono;
     }
 
     public Long getId() {
@@ -83,11 +80,11 @@ public class Restaurante {
         this.endereco = endereco;
     }
 
-    //public List<Produto> getProdutos() {
-   //     return produtos;
-  //  }
+    public DonoRestaurante getDono() {
+        return dono;
+    }
 
-    //public void setProdutos(List<Produto> produtos) {
-   //     this.produtos = produtos;
-   // }
+    public void setDono(DonoRestaurante dono) {
+        this.dono = dono;
+    }
 }

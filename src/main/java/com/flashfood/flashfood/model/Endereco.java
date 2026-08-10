@@ -1,5 +1,7 @@
 package com.flashfood.flashfood.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,11 +11,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tb_endereco")
 public class Endereco {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String logradouro;
     private String numero;
     private String complemento;
@@ -88,5 +88,22 @@ public class Endereco {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cep, numero);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Endereco other = (Endereco) obj;
+        return Objects.equals(cep, other.cep) && Objects.equals(numero, other.numero);
     }
 }
