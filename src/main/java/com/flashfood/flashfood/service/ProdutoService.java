@@ -1,14 +1,29 @@
+package com.flashfood.flashfood.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.flashfood.flashfood.exception.RegistroInexistenteException;
+import com.flashfood.flashfood.model.Produto;
+import com.flashfood.flashfood.repository.ProdutoRepository;
+
+@Service
 public class ProdutoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
 
     public Produto cadastrar(Produto produto) {
-        if (produto.getNome() == null  produto.getNome().isBlank()) {
+        if (produto.getNome() == null || produto.getNome().isBlank()) {
             throw new IllegalArgumentException("Nome do produto é obrigatório");
         }
-        if (produto.getPreco() == null  produto.getPreco() <= 0) {
+        if (produto.getPreco() == null || produto.getPreco() <= 0) {
             throw new IllegalArgumentException("Preço deve ser maior que zero");
+        }
+        if (produto.getRestaurante() == null || produto.getRestaurante().getId() == null) {
+            throw new IllegalArgumentException("Produto precisa estar vinculado a um restaurante!");
         }
         if (produto.getAtivo() == null) {
             produto.setAtivo(true);
@@ -25,6 +40,7 @@ public class ProdutoService {
     public List<Produto> listarTodos() {
         return produtoRepository.findAll();
     }
+
     public List<Produto> listarPorRestaurante(Long restauranteId) {
         return produtoRepository.findByRestauranteId(restauranteId);
     }

@@ -11,7 +11,7 @@ import com.flashfood.flashfood.exception.RegistroDuplicadoException;
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 
 @Service
-public class ClienteService {
+public class ClienteService implements InterfaceClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -25,6 +25,7 @@ public class ClienteService {
     @Autowired
     private EnderecoService enderecoService;
 
+    @Override
     public Cliente cadastrar(Cliente novo) throws RegistroDuplicadoException {
 
         if (novo.getNome() == null || novo.getNome().isBlank()) {
@@ -47,6 +48,7 @@ public class ClienteService {
         return clienteRepository.save(novo);
     }
 
+    @Override
     public Cliente atualizar(Long id, Cliente dadosAtualizados) throws RegistroInexistenteException {
         Cliente cliente = clienteRepository.findById(id)
             .orElseThrow(() -> new RegistroInexistenteException("Não existe cliente com o id = " + id));

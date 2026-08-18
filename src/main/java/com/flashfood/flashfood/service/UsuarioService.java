@@ -11,7 +11,7 @@ import com.flashfood.flashfood.repository.UsuarioRepository;
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements InterfaceUsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -19,6 +19,7 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public Usuario login(String email, String senha) throws RegistroInexistenteException {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new RegistroInexistenteException("E-mail ou senha inválidos"));
@@ -30,15 +31,18 @@ public class UsuarioService {
         return usuario;
     }
 
+    @Override
     public Usuario buscarPorId(Long id) throws RegistroInexistenteException {
         return usuarioRepository.findById(id)
             .orElseThrow(() -> new RegistroInexistenteException("Não existe usuário com o id = " + id));
     }
 
+    @Override
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }
 
+    @Override
     public void deletar(Long id) throws RegistroInexistenteException {
         Usuario usuario = buscarPorId(id);
         usuarioRepository.delete(usuario);

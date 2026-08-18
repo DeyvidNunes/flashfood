@@ -15,4 +15,4 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     // Busca todos os pedidos recebidos por um restaurante
     List<Pedido> findByRestauranteId(Long restauranteId);
-}
+}  

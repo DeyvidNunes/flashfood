@@ -11,7 +11,7 @@ import com.flashfood.flashfood.exception.RegistroDuplicadoException;
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 
 @Service
-public class DonoRestauranteService {
+public class DonoRestauranteService implements InterfaceDonoRestauranteService {
 
     @Autowired
     private DonoRestauranteRepository donoRestauranteRepository;
@@ -25,6 +25,7 @@ public class DonoRestauranteService {
     @Autowired
     private EnderecoService enderecoService;
 
+    @Override
     public DonoRestaurante cadastrar(DonoRestaurante novo) throws RegistroDuplicadoException {
 
         if (novo.getNome() == null || novo.getNome().isBlank()) {
@@ -47,6 +48,7 @@ public class DonoRestauranteService {
         return donoRestauranteRepository.save(novo);
     }
 
+    @Override
     public DonoRestaurante atualizar(Long id, DonoRestaurante dadosAtualizados) throws RegistroInexistenteException {
         DonoRestaurante dono = donoRestauranteRepository.findById(id)
             .orElseThrow(() -> new RegistroInexistenteException("Não existe dono de restaurante com o id = " + id));

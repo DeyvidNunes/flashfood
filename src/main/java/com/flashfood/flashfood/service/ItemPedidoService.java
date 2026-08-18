@@ -20,10 +20,10 @@ public class ItemPedidoService {
     private ProdutoService produtoService;
 
     public ItemPedido adicionarItem(ItemPedido item) throws RegistroInexistenteException {
-        if (item.getQuantidade() == null  item.getQuantidade() <= 0) {
+        if (item.getQuantidade() == null || item.getQuantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser maior que zero");
         }
-        if (item.getProduto() == null  item.getProduto().getId() == null) {
+        if (item.getProduto() == null || item.getProduto().getId() == null) {
             throw new IllegalArgumentException("Produto é obrigatório");
         }
 

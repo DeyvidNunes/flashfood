@@ -1,8 +1,8 @@
 package com.flashfood.flashfood.service;
 
-import static org.junit.jupiter.api.Assertions.;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.;
+import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 import com.flashfood.flashfood.model.Produto;
+import com.flashfood.flashfood.model.Restaurante;
 import com.flashfood.flashfood.repository.ProdutoRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +31,8 @@ class ProdutoServiceTest {
 
     @BeforeEach
     void setUp() {
-        produto = new Produto(1L, "Pizza Calabresa", "Com queijo", 45.0, true, null);
+        Restaurante restaurante = new Restaurante(1L, "Restaurante Teste", "Italiana", 5.0, null, null);
+        produto = new Produto(1L, "Pizza Calabresa", "Com queijo", 45.0, true, restaurante);
     }
 
     @Test
@@ -52,7 +54,8 @@ class ProdutoServiceTest {
             produtoService.cadastrar(produto);
         });
     }
-@Test
+
+    @Test
     void deveBuscarProdutoPorIdComSucesso() throws Exception {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produto));
 

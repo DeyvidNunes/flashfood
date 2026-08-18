@@ -1,11 +1,10 @@
 package com.flashfood.flashfood.service;
 
-import static org.junit.jupiter.api.Assertions.;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,4 +54,3 @@ class PedidoServiceTest {
         });
     }
 }
-﻿
