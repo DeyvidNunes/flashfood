@@ -113,6 +113,9 @@ public class FlashfoodFachada {
     // RESTAURANTE 
 
     public Restaurante cadastrarRestaurante(Restaurante restaurante, Long donoId) throws RegistroInexistenteException {
+        if (donoId == null) {
+            throw new IllegalArgumentException("É necessário informar o dono do restaurante");
+        }
         return restauranteService.cadastrar(restaurante, donoId);
     }
 

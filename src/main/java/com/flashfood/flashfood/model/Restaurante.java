@@ -87,4 +87,11 @@ public class Restaurante {
     public void setDono(DonoRestaurante dono) {
         this.dono = dono;
     }
+    
+    public void atualizarTaxaFrete(Double novaTaxa) {
+        if (novaTaxa == null || novaTaxa < 0) {
+            throw new IllegalArgumentException("Taxa de frete não pode ser negativa");
+        }
+        this.setTaxaFrete(novaTaxa);
+    }
 }

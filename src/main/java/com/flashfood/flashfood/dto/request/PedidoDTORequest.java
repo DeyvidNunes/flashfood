@@ -1,11 +1,12 @@
 package com.flashfood.flashfood.dto.request;
 
+import java.util.List;
+
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record PedidoDTORequest(
-    @NotNull(message = "Cliente é obrigatório")
-    Long clienteId,
-
-    @NotNull(message = "Restaurante é obrigatório")
-    Long restauranteId
+    @NotNull Long clienteId,
+    @NotNull Long restauranteId,
+    @NotEmpty List<ItemPedidoDTORequest> itens
 ) {}

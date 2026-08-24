@@ -42,7 +42,10 @@ class UsuarioServiceTest {
         when(usuarioRepository.findByEmail("joao@email.com")).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches("senha123", "senha123")).thenReturn(true);
 
-        Usuario resultado = usuarioService.login("joao@email.com", "senha123");
+        // referência via interface, não pela classe concreta
+        InterfaceUsuarioService service = usuarioService;
+
+        Usuario resultado = service.login("joao@email.com", "senha123");
 
         assertNotNull(resultado);
         assertEquals("joao@email.com", resultado.getEmail());
@@ -53,8 +56,10 @@ class UsuarioServiceTest {
         when(usuarioRepository.findByEmail("joao@email.com")).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches("senhaErrada", "senha123")).thenReturn(false);
 
+        InterfaceUsuarioService service = usuarioService;
+
         assertThrows(RegistroInexistenteException.class, () -> {
-            usuarioService.login("joao@email.com", "senhaErrada");
+            service.login("joao@email.com", "senhaErrada");
         });
     }
 
@@ -62,7 +67,9 @@ class UsuarioServiceTest {
     void deveBuscarUsuarioPorIdComSucesso() throws Exception {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
 
-        Usuario resultado = usuarioService.buscarPorId(1L);
+        InterfaceUsuarioService service = usuarioService;
+
+        Usuario resultado = service.buscarPorId(1L);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
@@ -72,8 +79,10 @@ class UsuarioServiceTest {
     void deveLancarExcecaoQuandoUsuarioInexistente() {
         when(usuarioRepository.findById(99L)).thenReturn(Optional.empty());
 
+        InterfaceUsuarioService service = usuarioService;
+
         assertThrows(RegistroInexistenteException.class, () -> {
-            usuarioService.buscarPorId(99L);
+            service.buscarPorId(99L);
         });
     }
 }
