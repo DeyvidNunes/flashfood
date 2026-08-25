@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import jakarta.validation.Valid;
 
 import com.flashfood.flashfood.conversor.RestauranteConversor;
 import com.flashfood.flashfood.dto.request.RestauranteDTORequest;
+import com.flashfood.flashfood.dto.response.RestauranteDTOResponse;
 import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.Restaurante;
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
@@ -38,6 +40,9 @@ public class RestauranteController {
 
     @GetMapping
     public ResponseEntity<?> listarTodos() {
-        return ResponseEntity.ok(fachada.listarRestaurantes());
+        List<RestauranteDTOResponse> lista = fachada.listarRestaurantes().stream()
+            .map(conversor::entityToResponse)
+            .toList();
+        return ResponseEntity.ok(lista);
     }
 }
