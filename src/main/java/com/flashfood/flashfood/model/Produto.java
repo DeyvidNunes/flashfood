@@ -87,4 +87,17 @@ public class Produto {
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
     }
+
+public void desativar() {
+    if (Boolean.FALSE.equals(this.getAtivo())) {
+        throw new IllegalArgumentException("Produto já está desativado");
+    }
+    this.setAtivo(false);
+}
+
+public void reativar() {
+    if (Boolean.TRUE.equals(this.getAtivo())) {
+        throw new IllegalArgumentException("Produto já está ativo");
+    }
+    this.setAtivo(true);
 }

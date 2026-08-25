@@ -166,6 +166,12 @@ public class FlashfoodFachada {
     // PEDIDO 
 
     public Pedido criarPedido(Pedido pedido, List<ItemPedido> itens) throws RegistroInexistenteException {
+        if (pedido.getRestaurante() == null || pedido.getRestaurante().getId() == null) {
+            throw new IllegalArgumentException("Não é possível criar pedido sem um restaurante definido");
+        }
+        // confirma que o restaurante realmente existe antes de prosseguir
+        restauranteService.buscarPorId(pedido.getRestaurante().getId());
+
         return pedidoService.criarPedido(pedido, itens);
     }
 

@@ -39,11 +39,14 @@ class PedidoServiceTest {
         when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedidoSalvo);
         when(itemPedidoService.adicionarItem(any(ItemPedido.class))).thenReturn(item);
 
-        Pedido resultado = pedidoService.criarPedido(pedido, List.of(item));
+        // ↓↓↓ ESSA LINHA É NOVA — o resto do teste já existia ↓↓↓
+        InterfacePedidoService service = pedidoService;
+
+        Pedido resultado = service.criarPedido(pedido, List.of(item));  // trocou pedidoService.criarPedido por service.criarPedido
 
         assertNotNull(resultado);
         verify(pedidoRepository, times(2)).save(any(Pedido.class));
-    }
+    } 
 
     @Test
     void deveLancarExcecaoQuandoListaDeItensEstiverVazia() {
