@@ -12,7 +12,7 @@ import com.flashfood.flashfood.model.Pedido;
 import com.flashfood.flashfood.repository.PedidoRepository;
 
 @Service
-public class PedidoService {
+public class PedidoService implements InterfacePedidoService  {
 
     @Autowired
     private PedidoRepository pedidoRepository;
