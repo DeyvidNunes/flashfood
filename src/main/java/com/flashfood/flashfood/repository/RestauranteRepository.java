@@ -15,4 +15,6 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     
     // Busca restaurantes por nome
     List<Restaurante> findByNomeContainingIgnoreCase(String nome);
+    
+    List<Restaurante> findByDonoId(Long donoId);
 }

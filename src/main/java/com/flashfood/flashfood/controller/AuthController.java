@@ -8,7 +8,7 @@ import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.Usuario;
 
 record LoginDTORequest(String email, String senha) {}
-record LoginDTOResponse(String token, String tipo) {}
+record LoginDTOResponse(Long id, String token, String tipo) {}
 
 @RestController
 @RequestMapping("/auth")
@@ -24,6 +24,6 @@ public class AuthController {
     public LoginDTOResponse login(@RequestBody LoginDTORequest dto) throws Exception {
         Usuario usuario = fachada.login(dto.email(), dto.senha());
         String token = jwtService.gerarToken(usuario);
-        return new LoginDTOResponse(token, usuario.getTipoUsuario());
+        return new LoginDTOResponse(usuario.getId(), token, usuario.getTipoUsuario());
     }
 }

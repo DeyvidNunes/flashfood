@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import com.flashfood.flashfood.conversor.ClienteConversor;
+import com.flashfood.flashfood.dto.request.AtualizarPerfilDTORequest;
 import com.flashfood.flashfood.dto.request.ClienteDTORequest;
 import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.Cliente;
@@ -35,5 +36,14 @@ public class ClienteController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) throws RegistroInexistenteException {
         Cliente cliente = (Cliente) fachada.buscarUsuarioPorId(id);
         return ResponseEntity.ok(conversor.entityToResponse(cliente));
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizarPerfilDTORequest dto) throws RegistroInexistenteException {
+        Cliente dadosAtualizados = new Cliente();
+        dadosAtualizados.setNome(dto.nome());
+        dadosAtualizados.setEmail(dto.email());
+        Cliente atualizado = fachada.atualizarCliente(id, dadosAtualizados);
+        return ResponseEntity.ok(conversor.entityToResponse(atualizado));
     }
 }

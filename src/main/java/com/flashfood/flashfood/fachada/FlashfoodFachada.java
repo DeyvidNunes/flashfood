@@ -134,6 +134,10 @@ public class FlashfoodFachada {
     public void deletarRestaurante(Long id) throws RegistroInexistenteException {
         restauranteService.deletar(id);
     }
+    
+    public List<Restaurante> listarRestaurantesPorDono(Long donoId) {
+        return restauranteService.listarPorDono(donoId);
+    }
 
     // PRODUTO
 

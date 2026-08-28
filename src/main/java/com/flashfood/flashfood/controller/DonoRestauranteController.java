@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import com.flashfood.flashfood.conversor.DonoRestauranteConversor;
+import com.flashfood.flashfood.dto.request.AtualizarPerfilDTORequest;
 import com.flashfood.flashfood.dto.request.DonoRestauranteDTORequest;
 import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.DonoRestaurante;
@@ -35,5 +36,14 @@ public class DonoRestauranteController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) throws RegistroInexistenteException {
         DonoRestaurante dono = (DonoRestaurante) fachada.buscarUsuarioPorId(id);
         return ResponseEntity.ok(conversor.entityToResponse(dono));
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizarPerfilDTORequest dto) throws RegistroInexistenteException {
+        DonoRestaurante dadosAtualizados = new DonoRestaurante();
+        dadosAtualizados.setNome(dto.nome());
+        dadosAtualizados.setEmail(dto.email());
+        DonoRestaurante atualizado = fachada.atualizarDonoRestaurante(id, dadosAtualizados);
+        return ResponseEntity.ok(conversor.entityToResponse(atualizado));
     }
 }

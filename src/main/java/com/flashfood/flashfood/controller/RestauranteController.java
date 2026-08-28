@@ -39,10 +39,27 @@ public class RestauranteController {
     }
 
     @GetMapping
-    public ResponseEntity<?> listarTodos() {
-        List<RestauranteDTOResponse> lista = fachada.listarRestaurantes().stream()
+    public ResponseEntity<?> listar(@RequestParam(required = false) Long donoId) {
+        List<Restaurante> restaurantes = (donoId != null)
+            ? fachada.listarRestaurantesPorDono(donoId)
+            : fachada.listarRestaurantes();
+
+        List<RestauranteDTOResponse> lista = restaurantes.stream()
             .map(conversor::entityToResponse)
             .toList();
         return ResponseEntity.ok(lista);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody RestauranteDTORequest dto) throws RegistroInexistenteException {
+        Restaurante dadosAtualizados = conversor.requestToEntity(dto);
+        Restaurante atualizado = fachada.atualizarRestaurante(id, dadosAtualizados);
+        return ResponseEntity.ok(conversor.entityToResponse(atualizado));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) throws RegistroInexistenteException {
+        fachada.deletarRestaurante(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 
 import com.flashfood.flashfood.conversor.PedidoConversor;
 import com.flashfood.flashfood.dto.request.PedidoDTORequest;
+import com.flashfood.flashfood.dto.response.PedidoDTOResponse;
 import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.ItemPedido;
 import com.flashfood.flashfood.model.Pedido;
@@ -39,5 +40,13 @@ public class PedidoController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) throws RegistroInexistenteException {
         Pedido pedido = fachada.buscarPedidoPorId(id);
         return ResponseEntity.ok(conversor.entityToResponse(pedido));
+    }
+    
+    @GetMapping
+    public ResponseEntity<?> listarPorCliente(@RequestParam Long clienteId) {
+        List<PedidoDTOResponse> lista = fachada.listarPedidosPorCliente(clienteId).stream()
+            .map(conversor::entityToResponse)
+            .toList();
+        return ResponseEntity.ok(lista);
     }
 }
