@@ -16,4 +16,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     //AndAtivoTrue - And (conector) + Ativo (campo ativo) + True (palavra-chave)
     List<Produto> findByRestauranteIdAndAtivoTrue(Long restauranteId);
+    
+    boolean existsByNomeIgnoreCaseAndRestauranteId(String nome, Long restauranteId);
 }

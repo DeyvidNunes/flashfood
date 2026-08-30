@@ -31,7 +31,7 @@ class PedidoRepositoryTest {
     @Test
     void deveSalvarPedidoComItens() {
         Cliente cliente = (Cliente) usuarioRepository.save(new Cliente(null, "Cliente Teste", "cliente@email.com", "123456", null));
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante Teste", "Regional", 5.0, null, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante Teste", "Regional", 5.0, "30-40 min", null, null));
         Produto produto = produtoRepository.save(new Produto(null, "Prato do Dia", "Descricao", 30.0, true, restaurante));
 
         Pedido pedido = pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "PENDENTE"));
@@ -54,7 +54,7 @@ class PedidoRepositoryTest {
     @Test
     void deveBuscarPedidosPorCliente() {
         Cliente cliente = (Cliente) usuarioRepository.save(new Cliente(null, "Ana Paula", "ana@email.com", "123456", null));
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante X", "Regional", 5.0, null, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante X", "Regional", 5.0, "30-40 min", null, null));
         pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "PENDENTE"));
         pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "ENTREGUE"));
 
@@ -65,7 +65,7 @@ class PedidoRepositoryTest {
     @Test
     void deveBuscarPedidosPorRestaurante() {
         Cliente cliente = (Cliente) usuarioRepository.save(new Cliente(null, "Carlos Souza", "carlos@email.com", "123456", null));
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante Y", "Regional", 5.0, null, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante Y", "Regional", 5.0, "30-40 min", null, null));
         pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "PENDENTE"));
 
         List<Pedido> pedidosDoRestaurante = pedidoRepository.findByRestauranteId(restaurante.getId());

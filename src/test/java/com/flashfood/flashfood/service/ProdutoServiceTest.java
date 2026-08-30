@@ -31,7 +31,7 @@ class ProdutoServiceTest {
 
     @BeforeEach
     void setUp() {
-        Restaurante restaurante = new Restaurante(1L, "Restaurante Teste", "Italiana", 5.0, null, null);
+        Restaurante restaurante = new Restaurante(1L, "Restaurante Teste", "Italiana", 5.0, "30-40 min", null, null);
         produto = new Produto(1L, "Pizza Calabresa", "Com queijo", 45.0, true, restaurante);
     }
 

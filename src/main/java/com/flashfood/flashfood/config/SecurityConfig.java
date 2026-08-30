@@ -30,9 +30,13 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/clientes/**", "/donos-restaurante/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/restaurantes/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/restaurantes/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/restaurantes/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/restaurantes/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/produtos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/avaliacoes/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/avaliacoes").authenticated()

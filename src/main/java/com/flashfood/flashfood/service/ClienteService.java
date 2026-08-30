@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.flashfood.flashfood.model.Cliente;
+import com.flashfood.flashfood.model.Endereco;
 import com.flashfood.flashfood.repository.ClienteRepository;
 import com.flashfood.flashfood.repository.UsuarioRepository;
 import com.flashfood.flashfood.exception.RegistroDuplicadoException;
@@ -55,6 +56,23 @@ public class ClienteService implements InterfaceClienteService {
 
         cliente.setNome(dadosAtualizados.getNome());
         cliente.setEmail(dadosAtualizados.getEmail());
+
+        if (dadosAtualizados.getEndereco() != null) {
+            if (cliente.getEndereco() != null) {
+                // já tem endereço: atualiza os campos do existente
+                Endereco atual = cliente.getEndereco();
+                Endereco novo = dadosAtualizados.getEndereco();
+                atual.setLogradouro(novo.getLogradouro());
+                atual.setNumero(novo.getNumero());
+                atual.setComplemento(novo.getComplemento());
+                atual.setBairro(novo.getBairro());
+                atual.setCidade(novo.getCidade());
+                atual.setCep(novo.getCep());
+            } else {
+                // não tinha endereço ainda: cria um novo e vincula
+                cliente.setEndereco(enderecoService.cadastrar(dadosAtualizados.getEndereco()));
+            }
+        }
 
         return clienteRepository.save(cliente);
     }

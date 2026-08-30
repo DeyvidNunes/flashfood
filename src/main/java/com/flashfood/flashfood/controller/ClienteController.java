@@ -12,6 +12,7 @@ import com.flashfood.flashfood.dto.request.AtualizarPerfilDTORequest;
 import com.flashfood.flashfood.dto.request.ClienteDTORequest;
 import com.flashfood.flashfood.fachada.FlashfoodFachada;
 import com.flashfood.flashfood.model.Cliente;
+import com.flashfood.flashfood.model.Endereco;
 import com.flashfood.flashfood.exception.RegistroDuplicadoException;
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 
@@ -43,7 +44,21 @@ public class ClienteController {
         Cliente dadosAtualizados = new Cliente();
         dadosAtualizados.setNome(dto.nome());
         dadosAtualizados.setEmail(dto.email());
+
+        if (dto.endereco() != null) {
+            Endereco endereco = new Endereco();
+            endereco.setLogradouro(dto.endereco().logradouro());
+            endereco.setNumero(dto.endereco().numero());
+            endereco.setComplemento(dto.endereco().complemento());
+            endereco.setBairro(dto.endereco().bairro());
+            endereco.setCidade(dto.endereco().cidade());
+            endereco.setCep(dto.endereco().cep());
+            dadosAtualizados.setEndereco(endereco);
+        }
+
         Cliente atualizado = fachada.atualizarCliente(id, dadosAtualizados);
         return ResponseEntity.ok(conversor.entityToResponse(atualizado));
     }
+    
+  
 }

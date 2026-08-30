@@ -19,6 +19,7 @@ public class Restaurante {
     private String nome;
     private String categoria;
     private Double taxaFrete;
+    private String tempoEntrega; 
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
@@ -28,14 +29,18 @@ public class Restaurante {
     @JoinColumn(name = "dono_id")
     private DonoRestaurante dono;
 
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String imagemUrl;
+
     public Restaurante() {
     }
 
-    public Restaurante(Long id, String nome, String categoria, Double taxaFrete, Endereco endereco, DonoRestaurante dono) {
+    public Restaurante(Long id, String nome, String categoria, Double taxaFrete, String tempoEntrega, Endereco endereco, DonoRestaurante dono) {
         this.id = id;
         this.nome = nome;
         this.categoria = categoria;
         this.taxaFrete = taxaFrete;
+        this.tempoEntrega = tempoEntrega;
         this.endereco = endereco;
         this.dono = dono;
     }
@@ -72,6 +77,14 @@ public class Restaurante {
         this.taxaFrete = taxaFrete;
     }
 
+    public String getTempoEntrega() {
+        return tempoEntrega;
+    }
+
+    public void setTempoEntrega(String tempoEntrega) {
+        this.tempoEntrega = tempoEntrega;
+    }
+
     public Endereco getEndereco() {
         return endereco;
     }
@@ -93,5 +106,13 @@ public class Restaurante {
             throw new IllegalArgumentException("Taxa de frete não pode ser negativa");
         }
         this.setTaxaFrete(novaTaxa);
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 }

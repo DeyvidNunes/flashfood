@@ -14,5 +14,6 @@ public record DonoRestauranteDTORequest(
 
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
-    String senha
+    String senha,
+    EnderecoDTORequest endereco
 ) {}

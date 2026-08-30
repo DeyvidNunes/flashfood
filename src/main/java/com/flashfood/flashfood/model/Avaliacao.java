@@ -21,7 +21,8 @@ public class Avaliacao {
 
     private Long clienteId;
 
-    // Getters e Setters
+    private Long pedidoId;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,4 +37,7 @@ public class Avaliacao {
 
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+
+    public Long getPedidoId() { return pedidoId; }
+    public void setPedidoId(Long pedidoId) { this.pedidoId = pedidoId; }
 }

@@ -14,6 +14,7 @@ public class RestauranteConversor {
         restaurante.setNome(dto.nome());
         restaurante.setCategoria(dto.categoria());
         restaurante.setTaxaFrete(dto.taxaFrete());
+        restaurante.setImagemUrl(dto.imagemUrl()); // Mapeia o recebimento da imagem
         return restaurante;
     }
 
@@ -22,7 +23,8 @@ public class RestauranteConversor {
             restaurante.getId(),
             restaurante.getNome(),
             restaurante.getCategoria(),
-            restaurante.getTaxaFrete()
+            restaurante.getTaxaFrete(),
+            restaurante.getImagemUrl() // Mapeia o envio da imagem para o front-end
         );
     }
 }

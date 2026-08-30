@@ -9,6 +9,8 @@ import com.flashfood.flashfood.exception.RegistroInexistenteException;
 import com.flashfood.flashfood.model.Produto;
 import com.flashfood.flashfood.repository.ProdutoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ProdutoService {
 
@@ -71,5 +73,23 @@ public class ProdutoService {
     public void deletar(Long id) throws RegistroInexistenteException {
         Produto produto = buscarPorId(id);
         produtoRepository.delete(produto);
+    }
+    
+    @Transactional
+    public Produto adicionarProduto(Produto produto) throws RegistroInexistenteException {
+        if (produto.getRestaurante() == null || produto.getRestaurante().getId() == null) {
+            throw new IllegalArgumentException("Restaurante é obrigatório.");
+        }
+
+        // Busca produtos do restaurante e verifica se já existe o mesmo nome
+        List<Produto> produtosExistentes = produtoRepository.findByRestauranteId(produto.getRestaurante().getId());
+        boolean duplicado = produtosExistentes.stream()
+            .anyMatch(p -> p.getNome().trim().equalsIgnoreCase(produto.getNome().trim()));
+
+        if (duplicado) {
+            throw new IllegalArgumentException("Já existe um produto com o nome '" + produto.getNome() + "' cadastrado neste restaurante.");
+        }
+
+        return produtoRepository.save(produto);
     }
 }

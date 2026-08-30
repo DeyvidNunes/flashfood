@@ -45,4 +45,10 @@ public class ProdutoController {
             .toList();
         return ResponseEntity.ok(lista);
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) throws RegistroInexistenteException {
+        fachada.deletarProduto(id);
+        return ResponseEntity.noContent().build();
+    }
 }

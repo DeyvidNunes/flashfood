@@ -16,5 +16,7 @@ public record RestauranteDTORequest(
     Double taxaFrete,
 
     @NotNull(message = "Dono é obrigatório")
-    Long donoId
+    Long donoId,
+    
+    String imagemUrl
 ) {}

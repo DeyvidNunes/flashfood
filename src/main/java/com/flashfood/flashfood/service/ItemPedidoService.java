@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.flashfood.flashfood.exception.RegistroInexistenteException;
 import com.flashfood.flashfood.model.ItemPedido;
@@ -18,7 +19,8 @@ public class ItemPedidoService {
 
     @Autowired
     private ProdutoService produtoService;
-
+ 
+    @Transactional
     public ItemPedido adicionarItem(ItemPedido item) throws RegistroInexistenteException {
         if (item.getQuantidade() == null || item.getQuantidade() <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser maior que zero");
@@ -38,10 +40,12 @@ public class ItemPedidoService {
         return itemPedidoRepository.save(item);
     }
 
+    @Transactional(readOnly = true)
     public List<ItemPedido> listarPorPedido(Long pedidoId) {
         return itemPedidoRepository.findByPedidoId(pedidoId);
     }
 
+    @Transactional
     public void deletar(Long id) throws RegistroInexistenteException {
         ItemPedido item = itemPedidoRepository.findById(id)
             .orElseThrow(() -> new RegistroInexistenteException("Não existe item de pedido com o id = " + id));

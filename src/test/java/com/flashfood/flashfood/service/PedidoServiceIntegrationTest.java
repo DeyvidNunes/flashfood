@@ -44,7 +44,7 @@ class PedidoServiceIntegrationTest {
         DonoRestaurante dono = donoRestauranteRepository.save(
             new DonoRestaurante(null, "Maria", "maria@email.com", "123", null));
 
-        Restaurante restauranteBase = new Restaurante(null, "Pizzaria", "Italiana", 5.0, null, null);
+        Restaurante restauranteBase = new Restaurante(null, "Pizzaria", "Italiana", 5.0, "30-40 min", null, null);
         Restaurante restaurante = restauranteService.cadastrar(restauranteBase, dono.getId());
 
         Produto produtoBase = new Produto(null, "Pizza", "Muzzarella", 40.0, true, restaurante);

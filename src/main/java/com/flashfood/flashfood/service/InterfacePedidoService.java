@@ -20,4 +20,6 @@ public interface InterfacePedidoService {
     List<Pedido> listarPorCliente(Long clienteId);
 
     List<Pedido> listarPorRestaurante(Long restauranteId);
+    
+    List<ItemPedido> buscarItensPorPedidoId(Long pedidoId);
 } 

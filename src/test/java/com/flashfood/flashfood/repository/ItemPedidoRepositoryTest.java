@@ -35,7 +35,7 @@ class ItemPedidoRepositoryTest {
     @Test
     void deveSalvarItemPedidoEGerarId() {
         Cliente cliente = (Cliente) usuarioRepository.save(new Cliente(null, "Cliente", "c@email.com", "123456", null));
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante", "Regional", 5.0, null, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante", "Regional", 5.0, "30-40 min", null, null));
         Produto produto = produtoRepository.save(new Produto(null, "Produto", "Descricao", 15.0, true, restaurante));
         Pedido pedido = pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "PENDENTE"));
 
@@ -62,7 +62,7 @@ class ItemPedidoRepositoryTest {
     @Test
     void deveBuscarItensPorPedido() {
         Cliente cliente = (Cliente) usuarioRepository.save(new Cliente(null, "Cliente", "c2@email.com", "123456", null));
-        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante", "Regional", 5.0, null, null));
+        Restaurante restaurante = restauranteRepository.save(new Restaurante(null, "Restaurante", "Regional", 5.0, "30-40 min", null, null));
         Produto produto = produtoRepository.save(new Produto(null, "Produto", "Descricao", 15.0, true, restaurante));
         Pedido pedido = pedidoRepository.save(new Pedido(null, cliente, restaurante, null, "PENDENTE"));
 

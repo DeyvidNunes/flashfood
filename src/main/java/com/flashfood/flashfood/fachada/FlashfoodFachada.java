@@ -198,4 +198,10 @@ public class FlashfoodFachada {
     public List<Pedido> listarPedidosPorRestaurante(Long restauranteId) {
         return pedidoService.listarPorRestaurante(restauranteId);
     }
+    
+    public List<ItemPedido> buscarItensPorPedidoId(Long pedidoId) {
+        return pedidoService.buscarItensPorPedidoId(pedidoId);
+    }
+    
+    
 }
