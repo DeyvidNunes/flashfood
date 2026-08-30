@@ -8,10 +8,23 @@ export default function CadastroPage() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  
+
+  const [logradouro, setLogradouro] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [cep, setCep] = useState('');
+
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Permite A-Z, a-z, letras acentuadas (Á-ú, ç, etc.) e espaços
+  const apenasTexto = (valor: string) => valor.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+  
+  // Permite apenas números de 0 a 9
+  const apenasNumeros = (valor: string) => valor.replace(/\D/g, '');
 
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +34,6 @@ export default function CadastroPage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-      
-      // Define o endpoint baseado na escolha do usuário
       const endpoint = tipoUsuario === 'CLIENTE' ? '/clientes' : '/donos-restaurante';
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
@@ -30,7 +41,19 @@ export default function CadastroPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nome, email, senha }),
+        body: JSON.stringify({
+          nome,
+          email,
+          senha,
+          endereco: {
+            logradouro,
+            numero,
+            complemento: complemento || null,
+            bairro,
+            cidade,
+            cep,
+          },
+        }),
       });
 
       if (!response.ok) {
@@ -40,11 +63,9 @@ export default function CadastroPage() {
 
       setMensagemSucesso('Cadastro realizado com sucesso! Redirecionando para o login...');
 
-      // Redireciona para a tela de login após 2 segundos
       setTimeout(() => {
         window.location.href = '/login';
       }, 2000);
-
     } catch (err: any) {
       if (err.message === 'Failed to fetch') {
         setErro('Não foi possível conectar ao serviço. Verifique sua conexão com a internet ou tente novamente em alguns minutos.');
@@ -59,14 +80,11 @@ export default function CadastroPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        
-        {/* Cabeçalho */}
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold text-red-600">FlashFood</h1>
           <p className="text-sm text-gray-500">Crie sua conta para começar</p>
         </div>
 
-        {/* Seletor de Tipo de Perfil */}
         <div className="mb-6 flex rounded-md bg-gray-100 p-1">
           <button
             type="button"
@@ -92,7 +110,6 @@ export default function CadastroPage() {
           </button>
         </div>
 
-        {/* Alertas */}
         {erro && (
           <div className="mb-4 rounded bg-red-100 p-3 text-sm text-red-700">
             {erro}
@@ -105,7 +122,6 @@ export default function CadastroPage() {
           </div>
         )}
 
-        {/* Formulário */}
         <form onSubmit={handleCadastro} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
@@ -113,7 +129,7 @@ export default function CadastroPage() {
               type="text"
               required
               value={nome}
-              onChange={(e) => setNome(e.target.value)}
+              onChange={(e) => setNome(apenasTexto(e.target.value))}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
               placeholder="Seu nome"
             />
@@ -144,6 +160,83 @@ export default function CadastroPage() {
             />
           </div>
 
+          <hr className="border-gray-200" />
+          <p className="text-sm font-semibold text-gray-700">Endereço</p>
+
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Logradouro</label>
+              <input
+                type="text"
+                required
+                value={logradouro}
+                onChange={(e) => setLogradouro(apenasTexto(e.target.value))}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+                placeholder="Rua/Av."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Número</label>
+              <input
+                type="text"
+                required
+                inputMode="numeric"
+                value={numero}
+                onChange={(e) => setNumero(apenasNumeros(e.target.value))}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+                placeholder="Nº"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Complemento (opcional)</label>
+            <input
+              type="text"
+              value={complemento}
+              onChange={(e) => setComplemento(e.target.value)}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+              placeholder="Apto, bloco..."
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Bairro</label>
+              <input
+                type="text"
+                required
+                value={bairro}
+                onChange={(e) => setBairro(apenasTexto(e.target.value))}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Cidade</label>
+              <input
+                type="text"
+                required
+                value={cidade}
+                onChange={(e) => setCidade(apenasTexto(e.target.value))}
+                className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">CEP</label>
+            <input
+              type="text"
+              required
+              inputMode="numeric"
+              maxLength={8}
+              value={cep}
+              onChange={(e) => setCep(apenasNumeros(e.target.value))}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black"
+              placeholder="00000000"
+            />
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -159,7 +252,6 @@ export default function CadastroPage() {
             Faça login
           </Link>
         </p>
-
       </div>
     </div>
   );

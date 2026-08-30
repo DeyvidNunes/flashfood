@@ -55,6 +55,7 @@ export default function DetalhesRestaurantePage({ params }: { params: Promise<{ 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
   const token = Cookies.get('token');
   const clienteId = Cookies.get('userId');
+  const [tipoPagamento, setTipoPagamento] = useState<'CARTAO' | 'PIX' | 'DINHEIRO'>('PIX');
 
   useEffect(() => {
     async function carregarDados() {
@@ -117,7 +118,7 @@ export default function DetalhesRestaurantePage({ params }: { params: Promise<{ 
     setEnviandoPedido(true);
 
     try {
-      const response = await fetch(`${apiUrl}/pedidos`, {
+      const responsePedido = await fetch(`${apiUrl}/pedidos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,12 +134,28 @@ export default function DetalhesRestaurantePage({ params }: { params: Promise<{ 
         }),
       });
 
-      if (!response.ok) {
-        const mensagemErro = await response.text();
+      if (!responsePedido.ok) {
+        const mensagemErro = await responsePedido.text();
         throw new Error(mensagemErro || 'Erro ao finalizar pedido.');
       }
 
-      setSucessoPedido('Pedido realizado com sucesso!');
+      const pedidoCriado = await responsePedido.json();
+
+      const responsePagamento = await fetch(`${apiUrl}/pedidos/${pedidoCriado.id}/pagamento`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ tipo: tipoPagamento }),
+      });
+
+      if (!responsePagamento.ok) {
+        const mensagemErro = await responsePagamento.text();
+        throw new Error(mensagemErro || 'Pedido criado, mas houve erro ao processar o pagamento.');
+      }
+
+      setSucessoPedido('Pedido realizado e método de pagamento escolhido!');
       setCarrinho([]);
     } catch (err: any) {
       setErroPedido(err.message || 'Erro de conexão com o servidor.');
@@ -212,13 +229,7 @@ export default function DetalhesRestaurantePage({ params }: { params: Promise<{ 
                   <span>{mediaAvaliacao.media.toFixed(1)}</span>
                   <span className="text-xs text-gray-400 font-normal">({mediaAvaliacao.total} avaliações)</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setModalAvaliacaoAberto(true)}
-                  className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-amber-600"
-                >
-                  Avaliar Loja
-                </button>
+          
               </div>
             </div>
 
@@ -346,18 +357,36 @@ export default function DetalhesRestaurantePage({ params }: { params: Promise<{ 
       {/* BARRA FIXA DO CARRINHO */}
       {carrinho.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-4 shadow-lg">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
-            <div className="text-sm text-gray-700">
-              <span className="font-semibold">{carrinho.reduce((n, i) => n + i.quantidade, 0)} item(ns)</span>
-              <span className="ml-3 font-bold text-gray-900">Total: R$ {totalCarrinho.toFixed(2)}</span>
+          <div className="mx-auto max-w-4xl">
+
+            <div className="flex gap-2 mb-2">
+              {(['PIX', 'CARTAO', 'DINHEIRO'] as const).map((tipo) => (
+                <button
+                  key={tipo}
+                  onClick={() => setTipoPagamento(tipo)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    tipoPagamento === tipo ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {tipo}
+                </button>
+              ))}
             </div>
-            <button
-              onClick={finalizarPedido}
-              disabled={enviandoPedido}
-              className="rounded-lg bg-red-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:opacity-50"
-            >
-              {enviandoPedido ? 'Enviando...' : 'Finalizar pedido'}
-            </button>
+
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-sm text-gray-700">
+                <span className="font-semibold">{carrinho.reduce((n, i) => n + i.quantidade, 0)} item(ns)</span>
+                <span className="ml-3 font-bold text-gray-900">Total: R$ {totalCarrinho.toFixed(2)}</span>
+              </div>
+              <button
+                onClick={finalizarPedido}
+                disabled={enviandoPedido}
+                className="rounded-lg bg-red-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {enviandoPedido ? 'Enviando...' : 'Finalizar pedido'}
+              </button>
+            </div>
+
           </div>
         </div>
       )}

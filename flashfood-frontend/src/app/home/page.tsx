@@ -38,6 +38,7 @@ export default function HomePage() {
 
   const [montado, setMontado] = useState(false);
   const [token, setToken] = useState<string | undefined>(undefined);
+  const [enderecoUsuario, setEnderecoUsuario] = useState<string | null>(null);
 
   const categoriasRef = useRef<HTMLDivElement>(null);
 
@@ -66,29 +67,48 @@ export default function HomePage() {
   useEffect(() => {
     setMontado(true);
     const tokenCookie = Cookies.get('token');
+    const tipoCookie = Cookies.get('tipo');
+    const userId = Cookies.get('userId');
+
     setToken(tokenCookie);
 
-    async function buscarRestaurantesEProdutosENotas() {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-        const headers: Record<string, string> = {};
-        if (tokenCookie) {
-          headers['Authorization'] = `Bearer ${tokenCookie}`;
-        }
+    async function carregarDados() {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const headers: Record<string, string> = {};
+      if (tokenCookie) {
+        headers['Authorization'] = `Bearer ${tokenCookie}`;
+      }
 
+      if (tokenCookie && userId) {
+        try {
+          const endpoint = tipoCookie === 'DONO_RESTAURANTE' ? 'donos-restaurante' : 'clientes';
+          const resUser = await fetch(`${apiUrl}/${endpoint}/${userId}`, { headers });
+          if (resUser.ok) {
+            const dataUser = await resUser.json();
+            const logradouro = dataUser.endereco?.logradouro || dataUser.logradouro;
+            const numero = dataUser.endereco?.numero || dataUser.numero;
+
+            if (logradouro) {
+              setEnderecoUsuario(`${logradouro}${numero ? `, ${numero}` : ''}`);
+            }
+          }
+        } catch {
+          // silenciosamente ignora
+        }
+      }
+
+      try {
         const response = await fetch(`${apiUrl}/restaurantes`, { headers });
         if (!response.ok) {
           throw new Error('Não foi possível carregar os restaurantes.');
         }
         const data: Restaurante[] = await response.json();
 
-        // Carrega Produtos e Média Real das Avaliações de cada loja
         const restaurantesComDadosAtuais = await Promise.all(
           data.map(async (r) => {
             let listaProdutos: Produto[] = r.produtos || r.itens || [];
             let notaMedia = 5.0;
 
-            // 1. Busca produtos
             if (listaProdutos.length === 0) {
               try {
                 const resProdutos = await fetch(`${apiUrl}/produtos?restauranteId=${r.id}`, { headers });
@@ -96,11 +116,10 @@ export default function HomePage() {
                   listaProdutos = await resProdutos.json();
                 }
               } catch {
-                // Mantém lista vazia
+                // Mantém array vazio
               }
             }
 
-            // 2. Busca nota/avaliação real do backend
             try {
               const resMedia = await fetch(`${apiUrl}/avaliacoes/restaurante/${r.id}/media`);
               if (resMedia.ok) {
@@ -110,7 +129,7 @@ export default function HomePage() {
                 }
               }
             } catch {
-              // Mantém nota padrão em caso de falha
+              // Mantém nota padrão 5.0
             }
 
             return {
@@ -118,8 +137,6 @@ export default function HomePage() {
               produtos: listaProdutos,
               avaliacao: notaMedia,
               imagemUrl: r.imagemUrl || 'https://via.placeholder.com/150/ea1d2c/ffffff?text=' + encodeURIComponent(r.nome),
-              tempoEntrega: r.tempoEntrega || '45-55 min',
-              distancia: r.distancia || '1.5 km',
             };
           })
         );
@@ -136,7 +153,7 @@ export default function HomePage() {
       }
     }
 
-    buscarRestaurantesEProdutosENotas();
+    carregarDados();
   }, []);
 
   function handleLogout() {
@@ -209,14 +226,22 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-5">
-            <div className="hidden md:flex items-center gap-1 text-xs text-gray-600 font-medium">
-              <span>📍 Av. Principal, 100</span>
-              <span className="text-red-600 font-bold">⌄</span>
-            </div>
+            {montado && (
+              <div className="hidden md:flex items-center gap-1 text-xs text-gray-600 font-medium">
+                <Link href="/perfil" className="flex items-center gap-1 hover:text-red-600 transition">
+                  <span> {enderecoUsuario || ''}</span>
+                  <span className="text-red-600 font-bold"></span>
+                </Link>
+              </div>
+            )}
 
             {montado && (
               token ? (
                 <div className="flex items-center gap-4">
+                  <Link href="/perfil" className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-red-600">
+                    <span>👤</span>
+                    <span className="hidden sm:inline">Perfil</span>
+                  </Link>
                   <Link href="/meus-pedidos" className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-red-600">
                     <span>🛍️</span>
                     <span className="hidden sm:inline">Pedidos</span>
@@ -384,6 +409,7 @@ export default function HomePage() {
               <Link key={restaurante.id} href={`/home/${restaurante.id}`}>
                 <div className="flex items-center gap-4 rounded-2xl border border-gray-100 p-4 transition-all hover:border-gray-200 hover:shadow-md cursor-pointer bg-white">
                   
+                  {/* IMAGEM DA LOJA */}
                   <div className="h-16 w-16 overflow-hidden rounded-full border border-gray-100 shrink-0 bg-gray-100">
                     <img
                       src={restaurante.imagemUrl}
@@ -395,22 +421,19 @@ export default function HomePage() {
                   <div className="flex-1 min-w-0">
                     <h3 className="truncate font-bold text-gray-800 text-sm">{restaurante.nome}</h3>
                     
-                    {/* NOTA ATUALIZADA DO BACKEND */}
-                    <div className="mt-1 flex items-center gap-1 text-xs text-amber-500 font-semibold">
+                    {/* ESTRELA E CATEGORIA */}
+                    <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-amber-500">
                       <span>★</span>
                       <span>{restaurante.avaliacao?.toFixed(1)}</span>
                       <span className="text-gray-400 font-normal">• {restaurante.categoria}</span>
-                      <span className="text-gray-400 font-normal">• {restaurante.distancia}</span>
                     </div>
 
+                    {/* FRETE */}
                     <div className="mt-1 text-xs text-gray-500">
-                      <span>{restaurante.tempoEntrega}</span>
-                      <span className="mx-1">•</span>
                       <span>
                         {restaurante.taxaFrete === 0
-                          ? 'Grátis'
-                          : `R$ ${restaurante.taxaFrete.toFixed(2)}`}
-                      </span>
+                          ? 'Frete = Grátis'
+                          : `Frete = R$ ${restaurante.taxaFrete.toFixed(2)}`}                      </span>
                     </div>
                   </div>
 

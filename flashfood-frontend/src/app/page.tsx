@@ -90,14 +90,8 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-gray-100 bg-white p-2 shadow-xl transition-all duration-300 hover:shadow-2xl sm:flex-row">
-            <div className="flex w-full items-center gap-2 px-3">
-              <span className="text-gray-400">📍</span>
-              <input
-                type="text"
-                placeholder="Selecione sua cidade ou endereço..."
-                className="w-full p-2 text-sm text-gray-800 outline-none"
-              />
-            </div>
+            {/* TEXTO PURO (SEM INPUT E SEM BOTÃO) */}
+
             <Link
               href="/home"
               className="w-full whitespace-nowrap rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-md transition-all duration-200 hover:bg-red-700 hover:shadow-lg active:scale-95 sm:w-auto"
