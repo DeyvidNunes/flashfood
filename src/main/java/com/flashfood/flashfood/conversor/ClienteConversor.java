@@ -15,6 +15,7 @@ public class ClienteConversor {
         cliente.setNome(dto.nome());
         cliente.setEmail(dto.email());
         cliente.setSenha(dto.senha());
+        cliente.setTelefone(dto.telefone());
 
         if (dto.endereco() != null) {
             Endereco endereco = new Endereco();
@@ -38,6 +39,7 @@ public class ClienteConversor {
             cliente.getId(),
             cliente.getNome(),
             cliente.getEmail(),
+            cliente.getTelefone(),
             logradouro,
             numero
         );

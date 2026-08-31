@@ -23,6 +23,8 @@ public abstract class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private String telefone;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
@@ -37,6 +39,7 @@ public abstract class Usuario {
         this.email = email;
         this.senha = senha;
         this.endereco = endereco;
+    
     }
 
     public Long getId() {
@@ -97,5 +100,13 @@ public abstract class Usuario {
             return false;
         Usuario other = (Usuario) obj;
         return Objects.equals(email, other.email);
+    }
+    
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 }

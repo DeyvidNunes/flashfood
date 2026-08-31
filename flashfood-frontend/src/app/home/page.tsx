@@ -136,7 +136,7 @@ export default function HomePage() {
               ...r,
               produtos: listaProdutos,
               avaliacao: notaMedia,
-              imagemUrl: r.imagemUrl || 'https://via.placeholder.com/150/ea1d2c/ffffff?text=' + encodeURIComponent(r.nome),
+              imagemUrl: r.imagemUrl || '',
             };
           })
         );
@@ -409,13 +409,21 @@ export default function HomePage() {
               <Link key={restaurante.id} href={`/home/${restaurante.id}`}>
                 <div className="flex items-center gap-4 rounded-2xl border border-gray-100 p-4 transition-all hover:border-gray-200 hover:shadow-md cursor-pointer bg-white">
                   
-                  {/* IMAGEM DA LOJA */}
-                  <div className="h-16 w-16 overflow-hidden rounded-full border border-gray-100 shrink-0 bg-gray-100">
-                    <img
-                      src={restaurante.imagemUrl}
-                      alt={restaurante.nome}
-                      className="h-full w-full object-cover"
-                    />
+                  {/* LOGO DA LOJA / PRIMEIRA LETRA */}
+                  <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-red-100 border border-red-200 flex items-center justify-center shrink-0">
+                    {restaurante.imagemUrl ? (
+                      <img
+                        src={restaurante.imagemUrl}
+                        alt={restaurante.nome}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    ) : null}
+                    <span className="absolute font-black text-red-600 text-2xl uppercase">
+                      {restaurante.nome ? restaurante.nome.charAt(0) : '🏪'}
+                    </span>
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -433,7 +441,8 @@ export default function HomePage() {
                       <span>
                         {restaurante.taxaFrete === 0
                           ? 'Frete = Grátis'
-                          : `Frete = R$ ${restaurante.taxaFrete.toFixed(2)}`}                      </span>
+                          : `Frete = R$ ${restaurante.taxaFrete.toFixed(2)}`}
+                      </span>
                     </div>
                   </div>
 

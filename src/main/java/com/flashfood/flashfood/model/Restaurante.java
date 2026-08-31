@@ -1,6 +1,7 @@
 package com.flashfood.flashfood.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,9 @@ public class Restaurante {
     private Double taxaFrete;
     private String tempoEntrega; 
 
+    @Column(unique = true)
+    private String cnpj;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
@@ -29,7 +33,7 @@ public class Restaurante {
     @JoinColumn(name = "dono_id")
     private DonoRestaurante dono;
 
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String imagemUrl;
 
     public Restaurante() {
@@ -114,5 +118,13 @@ public class Restaurante {
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
+    }
+    
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 }

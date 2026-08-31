@@ -2,6 +2,7 @@ package com.flashfood.flashfood.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record ClienteDTORequest(
@@ -15,5 +16,8 @@ public record ClienteDTORequest(
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
     String senha,
+    
+    @NotBlank @Pattern(regexp = "\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}", message = "Telefone inválido") String telefone,
+
     EnderecoDTORequest endereco
 ) {}

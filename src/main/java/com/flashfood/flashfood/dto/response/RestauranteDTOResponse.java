@@ -5,5 +5,6 @@ public record RestauranteDTOResponse(
     String nome,
     String categoria,
     Double taxaFrete,
+    String cnpj,
     String imagemUrl
 ) {}

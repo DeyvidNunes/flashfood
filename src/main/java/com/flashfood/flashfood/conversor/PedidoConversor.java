@@ -60,6 +60,22 @@ public class PedidoConversor {
             restauranteNome = pedido.getRestaurante().getNome();
         }
 
+        // Extrai o nome e o telefone do cliente do Pedido
+        String clienteNome = "Cliente";
+        String clienteTelefone = null;
+        if (pedido.getCliente() != null) {
+            try {
+                if (pedido.getCliente().getNome() != null) {
+                    clienteNome = pedido.getCliente().getNome();
+                }
+                if (pedido.getCliente().getTelefone() != null) {
+                    clienteTelefone = pedido.getCliente().getTelefone();
+                }
+            } catch (Exception e) {
+                // Proteção contra falha no proxy lazy-loading do Hibernate
+            }
+        }
+
         List<ItemPedidoDTOResponse> itensResponse = new ArrayList<>();
         if (itens != null) {
             itensResponse = itens.stream()
@@ -99,6 +115,8 @@ public class PedidoConversor {
             pedido.getStatus() != null ? pedido.getStatus() : "PENDENTE",
             pedido.getValorTotal() != null ? pedido.getValorTotal() : 0.0,
             restauranteNome,
+            clienteNome,
+            clienteTelefone,
             itensResponse
         );
     }

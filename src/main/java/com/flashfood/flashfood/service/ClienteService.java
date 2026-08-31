@@ -35,9 +35,16 @@ public class ClienteService implements InterfaceClienteService {
         if (novo.getEmail() == null || novo.getEmail().isBlank()) {
             throw new IllegalArgumentException("E-mail é obrigatório!");
         }
+        if (novo.getTelefone() == null || novo.getTelefone().isBlank()) {
+            throw new IllegalArgumentException("Telefone é obrigatório!");
+        }
 
         if (usuarioRepository.existsByEmail(novo.getEmail())) {
             throw new RegistroDuplicadoException("Não é possível cadastrar mais de um usuário com o mesmo e-mail.");
+        }
+
+        if (usuarioRepository.existsByTelefone(novo.getTelefone())) {
+            throw new RegistroDuplicadoException("Não é possível cadastrar mais de um usuário com o mesmo telefone.");
         }
 
         if (novo.getEndereco() != null) {
@@ -56,6 +63,15 @@ public class ClienteService implements InterfaceClienteService {
 
         cliente.setNome(dadosAtualizados.getNome());
         cliente.setEmail(dadosAtualizados.getEmail());
+
+        if (dadosAtualizados.getTelefone() != null && !dadosAtualizados.getTelefone().isBlank()) {
+            // Verifica se o novo telefone já pertence a outro usuário cadastrado
+            if (!dadosAtualizados.getTelefone().equals(cliente.getTelefone()) 
+                && usuarioRepository.existsByTelefone(dadosAtualizados.getTelefone())) {
+                throw new IllegalArgumentException("Este telefone já está cadastrado em outra conta.");
+            }
+            cliente.setTelefone(dadosAtualizados.getTelefone());
+        }
 
         if (dadosAtualizados.getEndereco() != null) {
             if (cliente.getEndereco() != null) {

@@ -35,6 +35,10 @@ public class RestauranteService implements InterfaceRestauranteService {
             throw new IllegalArgumentException("Taxa de frete inválida!");
         }
 
+        if (restaurante.getCnpj() != null && restauranteRepository.existsByCnpj(restaurante.getCnpj())) {
+            throw new IllegalArgumentException("Já existe um restaurante/loja cadastrado com este CNPJ.");
+        }
+
         DonoRestaurante dono = donoRestauranteRepository.findById(donoId)
             .orElseThrow(() -> new RegistroInexistenteException("Não existe dono de restaurante com o id = " + donoId));
         restaurante.setDono(dono);

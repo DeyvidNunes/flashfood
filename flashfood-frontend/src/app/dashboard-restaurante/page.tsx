@@ -16,6 +16,8 @@ interface Pedido {
   status: string;
   valorTotal: number;
   restauranteNome: string;
+  clienteNome?: string;
+  clienteTelefone?: string;
   pagamentoDescricao?: string;
   itens: ItemPedido[];
 }
@@ -32,7 +34,7 @@ export default function DashboardRestaurantePage() {
   const [restaurantes, setRestaurantes] = useState<Restaurante[]>([]);
   const [restauranteSelecionadoId, setRestauranteSelecionadoId] = useState<number | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  
+
   const [carregando, setCarregando] = useState(true);
   const [carregandoPedidos, setCarregandoPedidos] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState<'lojas' | 'pedidos'>('lojas');
@@ -41,6 +43,7 @@ export default function DashboardRestaurantePage() {
   const [novoNome, setNovoNome] = useState('');
   const [novaCategoria, setNovaCategoria] = useState('Lanches');
   const [novaTaxa, setNovaTaxa] = useState('0');
+  const [novoCnpj, setNovoCnpj] = useState('');
   const [cadastrando, setCadastrando] = useState(false);
 
   const token = Cookies.get('token');
@@ -120,6 +123,7 @@ export default function DashboardRestaurantePage() {
           nome: novoNome.trim(),
           categoria: novaCategoria,
           taxaFrete: parseFloat(novaTaxa) || 0.0,
+          cnpj: novoCnpj.trim(),
           donoId: Number(userId),
         }),
       });
@@ -129,6 +133,7 @@ export default function DashboardRestaurantePage() {
         setModalCadastroAberto(false);
         setNovoNome('');
         setNovaTaxa('0');
+        setNovoCnpj('');
         carregarRestaurantesDono();
       } else {
         const erroMsg = await res.text();
@@ -170,7 +175,7 @@ export default function DashboardRestaurantePage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto max-w-5xl">
-        
+
         {/* CABEÇALHO */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b bg-white p-6 rounded-2xl shadow-sm">
           <div>
@@ -318,11 +323,17 @@ export default function DashboardRestaurantePage() {
             ) : (
               <div className="space-y-4">
                 {pedidos.map((pedido) => (
-                  <div key={pedido.id} className="rounded-2xl border bg-white p-5 shadow-sm">
-                    
+                  <div key={pedido.id} className="rounded-2xl border bg-white p-5 shadow-sm space-y-3">
+
+                    {/* CABEÇALHO DO PEDIDO */}
                     <div className="flex flex-wrap items-center justify-between border-b pb-3 gap-2">
                       <div>
                         <span className="font-black text-gray-900 text-sm">Pedido #{pedido.id}</span>
+                        {pedido.clienteNome && (
+                          <span className="ml-2 text-xs font-bold text-gray-600">
+                            • Cliente: {pedido.clienteNome}
+                          </span>
+                        )}
                         <span className="ml-3 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
                           {pedido.status}
                         </span>
@@ -335,6 +346,23 @@ export default function DashboardRestaurantePage() {
                       </div>
                     </div>
 
+                    {/* DADOS DO CLIENTE E CONTATO (NOVO) */}
+                    {pedido.clienteTelefone && (
+                      <div className="flex items-center gap-2 rounded-xl bg-blue-50 p-2.5 text-xs text-blue-900 font-medium border border-blue-100">
+                        <span>📞</span>
+                        <span><strong>Telefone do Cliente:</strong> {pedido.clienteTelefone}</span>
+                        <a
+                          href={`https://wa.me/55${pedido.clienteTelefone.replace(/\D/g, '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-auto text-[11px] font-bold text-green-700 bg-green-100 hover:bg-green-200 px-2.5 py-1 rounded-lg transition"
+                        >
+                          WhatsApp
+                        </a>
+                      </div>
+                    )}
+
+                    {/* ITENS DO PEDIDO */}
                     <div className="my-3 space-y-1">
                       {pedido.itens?.map((item, idx) => (
                         <div key={idx} className="flex justify-between text-xs text-gray-700 font-medium">
@@ -344,6 +372,7 @@ export default function DashboardRestaurantePage() {
                       ))}
                     </div>
 
+                    {/* FORMA DE PAGAMENTO */}
                     <div className="my-2 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-gray-50 p-3 text-xs text-gray-700">
                       <div className="flex items-center gap-2">
                         <span>💳</span>
@@ -362,6 +391,7 @@ export default function DashboardRestaurantePage() {
                       </button>
                     </div>
 
+                    {/* ALTERAÇÃO DE STATUS */}
                     <div className="mt-4 flex flex-wrap items-center justify-between border-t pt-3 gap-2">
                       <span className="text-xs font-bold text-gray-500">Alterar Status:</span>
                       <div className="flex flex-wrap gap-2">
@@ -439,6 +469,19 @@ export default function DashboardRestaurantePage() {
                     step="0.01"
                     value={novaTaxa}
                     onChange={(e) => setNovaTaxa(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 p-2.5 text-xs outline-none focus:border-red-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">CNPJ</label>
+                  <input
+                    type="text"
+                    required
+                    inputMode="numeric"
+                    value={novoCnpj}
+                    onChange={(e) => setNovoCnpj(e.target.value.replace(/\D/g, ''))}
+                    placeholder="00000000000000"
                     className="w-full rounded-xl border border-gray-200 p-2.5 text-xs outline-none focus:border-red-600"
                   />
                 </div>

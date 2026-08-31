@@ -7,5 +7,7 @@ public record PedidoDTOResponse(
     String status,
     Double valorTotal,
     String restauranteNome,
+    String clienteNome,
+    String clienteTelefone,
     List<ItemPedidoDTOResponse> itens
 ) {}

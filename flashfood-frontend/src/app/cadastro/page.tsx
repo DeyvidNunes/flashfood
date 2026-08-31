@@ -8,6 +8,7 @@ export default function CadastroPage() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [telefone, setTelefone] = useState('');
 
   const [logradouro, setLogradouro] = useState('');
   const [numero, setNumero] = useState('');
@@ -20,11 +21,28 @@ export default function CadastroPage() {
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Permite A-Z, a-z, letras acentuadas (Á-ú, ç, etc.) e espaços
   const apenasTexto = (valor: string) => valor.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
-  
-  // Permite apenas números de 0 a 9
   const apenasNumeros = (valor: string) => valor.replace(/\D/g, '');
+
+  // Função para aplicar a máscara (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+  const formatarTelefone = (valor: string) => {
+    const numeros = valor.replace(/\D/g, '').slice(0, 11);
+
+    if (numeros.length <= 2) {
+      return numeros.length > 0 ? `(${numeros}` : '';
+    }
+    if (numeros.length <= 6) {
+      return `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+    }
+    if (numeros.length <= 10) {
+      return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 6)}-${numeros.slice(6)}`;
+    }
+    return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7, 11)}`;
+  };
+
+  const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTelefone(formatarTelefone(e.target.value));
+  };
 
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +63,7 @@ export default function CadastroPage() {
           nome,
           email,
           senha,
+          telefone,
           endereco: {
             logradouro,
             numero,
@@ -157,6 +176,20 @@ export default function CadastroPage() {
               onChange={(e) => setSenha(e.target.value)}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
               placeholder="No mínimo 6 caracteres"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Telefone / WhatsApp</label>
+            <input
+              type="tel"
+              required
+              inputMode="numeric"
+              maxLength={15}
+              value={telefone}
+              onChange={handleTelefoneChange}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 text-black shadow-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+              placeholder="(11) 98765-4321"
             />
           </div>
 

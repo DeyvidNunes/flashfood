@@ -15,6 +15,7 @@ public class DonoRestauranteConversor {
         dono.setNome(dto.nome());
         dono.setEmail(dto.email());
         dono.setSenha(dto.senha());
+        dono.setTelefone(dto.telefone());
 
         if (dto.endereco() != null) {
             Endereco endereco = new Endereco();
