@@ -42,9 +42,11 @@ export default function DashboardRestaurantePage() {
   const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
   const [novoNome, setNovoNome] = useState('');
   const [novaCategoria, setNovaCategoria] = useState('Lanches');
+  const [categoriaPersonalizada, setCategoriaPersonalizada] = useState('');
   const [novaTaxa, setNovaTaxa] = useState('0');
   const [novoCnpj, setNovoCnpj] = useState('');
   const [cadastrando, setCadastrando] = useState(false);
+
 
   const token = Cookies.get('token');
   const userId = Cookies.get('userId');
@@ -121,7 +123,7 @@ export default function DashboardRestaurantePage() {
         },
         body: JSON.stringify({
           nome: novoNome.trim(),
-          categoria: novaCategoria,
+           categoria: novaCategoria === 'OUTRO' ? categoriaPersonalizada.trim() : novaCategoria,
           taxaFrete: parseFloat(novaTaxa) || 0.0,
           cnpj: novoCnpj.trim(),
           donoId: Number(userId),
@@ -134,6 +136,7 @@ export default function DashboardRestaurantePage() {
         setNovoNome('');
         setNovaTaxa('0');
         setNovoCnpj('');
+         setCategoriaPersonalizada('');
         carregarRestaurantesDono();
       } else {
         const erroMsg = await res.text();
@@ -430,11 +433,11 @@ export default function DashboardRestaurantePage() {
         {modalCadastroAberto && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-              <h3 className="text-base font-bold text-gray-900">Cadastrar Novo Restaurante</h3>
+              <h3 className="text-base font-bold text-gray-900">Cadastrar Novo Restaurante/Nova Loja</h3>
 
               <form onSubmit={cadastrarRestaurante} className="mt-4 space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Nome da Loja</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Nome da Loja/Restaurante</label>
                   <input
                     type="text"
                     required
@@ -446,21 +449,33 @@ export default function DashboardRestaurantePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Categoria</label>
-                  <select
-                    value={novaCategoria}
-                    onChange={(e) => setNovaCategoria(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 p-2.5 text-xs outline-none focus:border-red-600"
-                  >
-                    <option value="Lanches">Lanches</option>
-                    <option value="Pizza">Pizza</option>
-                    <option value="Brasileira">Brasileira</option>
-                    <option value="Japonesa">Japonesa</option>
-                    <option value="Doces & Bolos">Doces & Bolos</option>
-                    <option value="Açaí">Açaí</option>
-                    <option value="Bebidas">Bebidas</option>
-                  </select>
-                </div>
+  <label className="block text-xs font-bold text-gray-700 mb-1">Categoria</label>
+  <select
+    value={novaCategoria}
+    onChange={(e) => setNovaCategoria(e.target.value)}
+    className="w-full rounded-xl border border-gray-200 p-2.5 text-xs outline-none focus:border-red-600"
+  >
+    <option value="Lanches">Lanches</option>
+    <option value="Pizza">Pizza</option>
+    <option value="Brasileira">Brasileira</option>
+    <option value="Japonesa">Japonesa</option>
+    <option value="Doces & Bolos">Doces & Bolos</option>
+    <option value="Açaí">Açaí</option>
+    <option value="Bebidas">Bebidas</option>
+    <option value="OUTRO">Outro (digite abaixo)</option>
+  </select>
+
+  {novaCategoria === 'OUTRO' && (
+    <input
+      type="text"
+      required
+      value={categoriaPersonalizada}
+      onChange={(e) => setCategoriaPersonalizada(e.target.value)}
+      placeholder="Digite a categoria"
+      className="mt-2 w-full rounded-xl border border-gray-200 p-2.5 text-xs outline-none focus:border-red-600"
+    />
+  )}
+</div>
 
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-1">Taxa de Frete (R$)</label>
